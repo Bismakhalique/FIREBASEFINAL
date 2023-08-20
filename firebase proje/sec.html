@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-storage.js"></script>
+    <link rel="stylesheet" href="./sec.css"> 
+</head>
+<body id="whole1">
+    <h4 class="sec"><h2>SAYLANI WELFARE</h2>
+    <h5 class="sec1"><h4>ONLINE MARKET PLACE</h4>
+    <form id="contactform">
+        <div class="input-container">
+            <input type="text" id="username" name="username" placeholder="username" required>
+            <img class="icon" src="./User name icon.png" alt="Profile Icon">
+        </div>
+        <div class="input-container">
+            <input type="tel" id="contact" name="contact" placeholder="contact" required>
+            <img class="icon" src="./Frame.png" alt="Profile Icon">
+        </div>
+        <div class="input-container">
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <img class="icon" src="./Email icon.png" alt="Profile Icon">
+        </div>
+        <div class="input-container">
+            <input type="password" id="password" name="password" placeholder="password" required>
+            <img class="icon" src="./Password icon.png" alt="Profile Icon">
+        </div>
+        <br>
+       <div class="signup ">   <input type="submit" value="Sign Up"></div>
+        <a href="./signin.html"><h3 class="sign">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Already have an account? Login</h3></a>
+    </form>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_IlgCjVWF3yPNKveeVHdZi77Nn0AupPQ",
+       authDomain: "smit-project-293db.firebaseapp.com",
+       databaseURL: "https://smit-project-293db-default-rtdb.firebaseio.com",
+       projectId: "smit-project-293db",
+       storageBucket: "smit-project-293db.appspot.com",
+       messagingSenderId: "37947608465",
+       appId: "1:37947608465:web:3bd9f6c26094a8fea5de30",
+       measurementId: "G-7TH7WNBC0P"
+  };
+        const app = firebase.initializeApp(firebaseConfig);
+
+        const contactForm = document.getElementById('contactform');
+        contactForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const contact = document.getElementById('contact').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+
+                // User creation successful, store additional data
+                const user = userCredential.user;
+                const usersRef = firebase.database().ref('users');
+                usersRef.push({
+                    uid: user.uid,
+                    username: username,
+                    contact: contact,
+                    email: email,
+                    password: password
+                });
+
+                const userObject = { email: email };
+                sessionStorage.setItem('user', JSON.stringify(userObject));
+
+                console.log('User created successfully.');
+                window.location.href = './page.html';
+            } catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error(errorCode + ': ' + errorMessage);
+                // Handle the error, e.g., display an error message to the user
+            }
+        });
+    </script>
+
+</body>
+</html>
